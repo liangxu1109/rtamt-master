@@ -43,6 +43,7 @@ class AbstractSpecification:
     __metaclass__ = ABCMeta
 
     def __init__(self):
+        self.robustness_type = None
         self.S_UNIT = int(1000000000)
         self.MS_UNIT = int(1000000)
         self.US_UNIT = int(1000)

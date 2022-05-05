@@ -39,9 +39,9 @@ NOT_IMPLEMENTED = "You should implement this."
 class STLASTVisitor:
     __metaclass__ = ABCMeta
 
-    def visit(self, element, args):
+    def visit(self, element, args, robustness_type):
         if isinstance(element, Predicate):
-            ast = self.visitPredicate(element, args)
+            ast = self.visitPredicate(element, args, robustness_type)
         elif isinstance(element, Variable):
             ast = self.visitVariable(element, args)
         elif isinstance(element, Neg):
@@ -49,7 +49,7 @@ class STLASTVisitor:
         elif isinstance(element, Disjunction):
             ast = self.visitOr(element, args)
         elif isinstance(element, Conjunction):
-            ast = self.visitAnd(element, args)
+            ast = self.visitAnd(element, args,robustness_type)
         elif isinstance(element, Implies):
             ast = self.visitImplies(element, args)
         elif isinstance(element, Iff):
@@ -114,7 +114,7 @@ class STLASTVisitor:
 
 
     @abstractmethod
-    def visitPredicate(self, element, args):
+    def visitPredicate(self, element, args, robustness_type):
         raise NotImplementedError(NOT_IMPLEMENTED)
 
     @abstractmethod
@@ -158,7 +158,7 @@ class STLASTVisitor:
         raise NotImplementedError(NOT_IMPLEMENTED)
 
     @abstractmethod
-    def visitAnd(self, element, args):
+    def visitAnd(self, element, args, robustness_type):
         raise NotImplementedError(NOT_IMPLEMENTED)
 
     @abstractmethod

@@ -43,11 +43,11 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
 
     """
 
-    def __init__(self, semantics=Semantics.STANDARD, language=Language.PYTHON):
+    def __init__(self, semantics=Semantics.STANDARD, language=Language.PYTHON , robustness_type='Traditional'):
         """Constructor for STL Specification"""
-        super(STLDiscreteTimeSpecification, self).__init__(semantics, language)
+        super(STLDiscreteTimeSpecification, self).__init__(semantics, language, robustness_type)
         self.name = 'STL Specification'
-
+        self.robustness_type = robustness_type
         self.DEFAULT_TOLERANCE = float(0.1)
 
         # Default sampling period - 1s
@@ -76,6 +76,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
         # Parse the STL spec - ANTLR4 magic
 
         entire_spec = self.modular_spec + self.spec
+
         input_stream = InputStream(entire_spec)
         lexer = StlLexer(input_stream)
         stream = CommonTokenStream(lexer)
@@ -86,14 +87,16 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
         # Create the visitor for the actual spec nodes
         visitor = STLSpecificationParser(self)
         self.top = visitor.visitSpecification_file(ctx)
+        print("self.top is",type(self.top))
 
-        # print('Hello')
-        # print(self.unit)
-        # print('sampling period unit: ' + str(self.sampling_period_unit))
-        # print(self.U[self.unit])
-        # print(self.U[self.sampling_period_unit])
+         #print('Hello')
+         #print(self.unit)
+         #print('sampling period unit: ' + str(self.sampling_period_unit))
+         #print(self.U[self.unit])
+         #print(self.U[self.sampling_period_unit])
 
         self.normalize = float(self.U[self.unit]) / float(self.U[self.sampling_period_unit])
+        #print("self.normalize is", self.normalize)
 
     def pastify(self):
         # Translate bounded future STL to past STL
@@ -173,7 +176,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
 
         if self.offline_evaluator is None:
             # Initialize the offline_evaluator
-            self.offline_evaluator = STLOfflineEvaluator(self)
+            self.offline_evaluator = STLOfflineEvaluator(self, self.robustness_type)
             self.top.accept(self.offline_evaluator)
             self.reseter.node_monitor_dict = self.offline_evaluator.node_monitor_dict
 
@@ -199,7 +202,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
             self.var_object_dict[key] = out
 
         # The evaluation done wrt the discrete counter (logical time)
-        out = self.offline_evaluator.evaluate(self.top, [length])
+        out = self.offline_evaluator.evaluate(self.top, [length], self.robustness_type)
 
         out_t = [[a[0],a[1]] for a in zip(ts,out)]
         out = out_t

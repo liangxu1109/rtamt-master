@@ -21,3 +21,9 @@ class TimeInterpretation(Enum):
     DENSE = "dense-time"
     def __str__(self):
         return self.value
+
+class RobustnessMetrics(Enum):
+    AGM = "AGM"
+    Standard = 'Traditional'
+    def __str__(self):
+        return self.value

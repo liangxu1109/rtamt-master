@@ -5,9 +5,10 @@ from rtamt.ast.visitor.stl.ASTVisitor import STLASTVisitor
 
 
 class STLOfflineEvaluator(STLASTVisitor):
-    def __init__(self, spec):
+    def __init__(self, spec, robustness_type):
         self.spec = spec
         generator = None
+        self.robustness_type = robustness_type
 
         if self.spec.language == Language.PYTHON:
             if self.spec.time_interpretation == TimeInterpretation.DENSE:
@@ -26,10 +27,10 @@ class STLOfflineEvaluator(STLASTVisitor):
                                              'available in this version '
                                              'of the library'.format(self.spec.time_interpretation, self.spec.language))
 
-        self.node_monitor_dict = generator.generate(self.spec.top)
+        self.node_monitor_dict = generator.generate(self.spec.top, robustness_type)
 
-    def evaluate(self, node, args):
-        sample = self.visit(node, args)
+    def evaluate(self, node, args, robustness_type):
+        sample = self.visit(node, args, robustness_type)
 
         out_sample = self.spec.var_object_dict[self.spec.out_var]
         if self.spec.out_var_field:
@@ -39,9 +40,9 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitPredicate(self, node, args):
-        in_sample_1 = self.visit(node.children[0], args)
-        in_sample_2 = self.visit(node.children[1], args)
+    def visitPredicate(self, node, args, robustness_type):
+        in_sample_1 = self.visit(node.children[0], args, robustness_type)
+        in_sample_2 = self.visit(node.children[1], args, robustness_type)
 
         monitor = self.node_monitor_dict[node.name]
         out_sample = monitor.update(in_sample_1, in_sample_2)
@@ -218,12 +219,12 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitAnd(self, node, args):
-        in_sample_1 = self.visit(node.children[0], args)
-        in_sample_2 = self.visit(node.children[1], args)
+    def visitAnd(self, node, args, robustness_type):
+        in_sample_1 = self.visit(node.children[0], args,robustness_type)#robustness of Conjuction left node
+        in_sample_2 = self.visit(node.children[1], args,robustness_type)#robustness of Conjuction right node
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample_1, in_sample_2)
+        out_sample = monitor.update(in_sample_1, in_sample_2, robustness_type)#Robustness of left and right node with the operator Conjunction
 
         return out_sample
 

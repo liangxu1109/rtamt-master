@@ -37,16 +37,16 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
     def __init__(self):
         self.node_monitor_dict = dict()
         
-    def generate(self, node):
-        self.visit(node, [])
+    def generate(self, node,robustness_type):
+        self.visit(node, [], robustness_type)
         return self.node_monitor_dict
 
-    def visitPredicate(self, node, args):
-        monitor = PredicateOperation(node.operator)
+    def visitPredicate(self, node, args, robustness_type):
+        monitor = PredicateOperation(node.operator, robustness_type)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
-        self.visit(node.children[1], args)
+        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[1], args, robustness_type)
 
     def visitVariable(self, node, args):
         pass
@@ -106,12 +106,12 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
 
         self.visit(node.children[0], args)
 
-    def visitAnd(self, node, args):
-        monitor = AndOperation()
+    def visitAnd(self, node, args,robustness_type):
+        monitor = AndOperation(robustness_type)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
-        self.visit(node.children[1], args)
+        self.visit(node.children[0], args,robustness_type)
+        self.visit(node.children[1], args,robustness_type)
 
     def visitOr(self, node, args):
         monitor = OrOperation()

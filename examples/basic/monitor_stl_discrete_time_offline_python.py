@@ -6,7 +6,8 @@ def monitor():
     dataSet = {
          'time': [0, 1, 2],
          'a': [100.0, -1.0, -2.0],
-         'b': [20.0, 2.0, -10.0]
+         'b': [20.0, 2.0, -10.0],
+        'c': [12.0,2.0,-10]
     }
 
     # # stl
@@ -14,7 +15,8 @@ def monitor():
     spec.name = 'STL discrete-time online Python monitor'
     spec.declare_var('a', 'float')
     spec.declare_var('b', 'float')
-    spec.spec = 'a + b >= - 2'
+    spec.declare_var('c', 'float')
+    spec.spec = 'a + b + c >= - 2'
 
     try:
         spec.parse()

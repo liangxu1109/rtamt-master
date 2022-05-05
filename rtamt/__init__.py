@@ -11,7 +11,7 @@ from rtamt.exception.ltl.exception import LTLParseException
 from rtamt.exception.ltl.exception import LTLSpecificationException
 from rtamt.exception.exception import RTAMTException
 from rtamt.enumerations.io_type import StlIOType
-from rtamt.enumerations.options import Language, Semantics, TimeInterpretation
+from rtamt.enumerations.options import Language, Semantics, TimeInterpretation, RobustnessMetrics
 from rtamt.spec.stl.discrete_time.specification import STLDiscreteTimeSpecification
 from rtamt.spec.stl.discrete_time.specification import STLDiscreteTimeSpecification as STLSpecification
 from rtamt.spec.stl.dense_time.specification import STLDenseTimeSpecification

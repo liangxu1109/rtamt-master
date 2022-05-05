@@ -14,8 +14,8 @@ class AbstractOperation:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self):
-        pass
+    def __init__(self,robustness_type):
+        self.robustness_type = robustness_type
 
     @abstractmethod
     def update(self, *args, **kargs):

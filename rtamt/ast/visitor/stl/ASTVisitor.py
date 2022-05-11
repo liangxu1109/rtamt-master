@@ -59,7 +59,7 @@ class STLASTVisitor:
         elif isinstance(element, Eventually):
             ast = self.visitEventually(element, args)
         elif isinstance(element, Always):
-            ast = self.visitAlways(element, args)
+            ast = self.visitAlways(element, args, robustness_type)
         elif isinstance(element, Until):
             ast = self.visitUntil(element, args)
         elif isinstance(element, Once):
@@ -99,9 +99,9 @@ class STLASTVisitor:
         elif isinstance(element, TimedUntil):
             ast = self.visitTimedUntil(element, args)
         elif isinstance(element, TimedAlways):
-            ast = self.visitTimedAlways(element, args)
+            ast = self.visitTimedAlways(element, args, robustness_type)
         elif isinstance(element, TimedEventually):
-            ast = self.visitTimedEventually(element, args)
+            ast = self.visitTimedEventually(element, args, robustness_type)
         elif isinstance(element, TimedSince):
             ast = self.visitTimedSince(element, args)
         elif isinstance(element, TimedOnce):

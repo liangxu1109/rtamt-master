@@ -147,11 +147,11 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
 
         self.visit(node.children[0], args)
 
-    def visitAlways(self, node, args):
+    def visitAlways(self, node, args, robustness_type):
         monitor = AlwaysOperation()
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
+        self.visit(node.children[0], args, robustness_type)
 
     def visitUntil(self, node, args):
         monitor = UntilOperation()
@@ -229,17 +229,17 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
         self.visit(node.children[0], args)
         self.visit(node.children[1], args)
 
-    def visitTimedAlways(self, node, args):
-        monitor = AlwaysBoundedOperation(node.begin, node.end)
+    def visitTimedAlways(self, node, args, robustness_type):
+        monitor = AlwaysBoundedOperation(node.begin, node.end, robustness_type)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
+        self.visit(node.children[0], args, robustness_type)
 
-    def visitTimedEventually(self, node, args):
-        monitor = EventuallyBoundedOperation(node.begin, node.end)
+    def visitTimedEventually(self, node, args, robustness_type):
+        monitor = EventuallyBoundedOperation(node.begin, node.end, robustness_type)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
+        self.visit(node.children[0], args, robustness_type)
 
     def visitTimedUntil(self, node, args):
         monitor = UntilBoundedOperation(node.begin, node.end)

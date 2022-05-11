@@ -4,7 +4,7 @@ class AlwaysOperation(AbstractOperation):
     def __init__(self):
         pass
 
-    def update(self, samples):
+    def update(self, samples, robustness_type):
         out = []
         prev_out = float("inf")
         for sample in reversed(samples):

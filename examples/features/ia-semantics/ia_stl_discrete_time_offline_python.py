@@ -15,7 +15,7 @@ def monitor():
     }
 
     # # AGM ROBUSTNESS
-    spec = rtamt.STLSpecification(language=rtamt.Language.PYTHON, semantics=rtamt.Semantics.STANDARD, robustness_type = rtamt.RobustnessMetrics.AGM.__str__())
+    spec = rtamt.STLSpecification(language=rtamt.Language.PYTHON, semantics=rtamt.Semantics.STANDARD, robustness_type = rtamt.RobustnessMetrics.Standard.__str__())
     spec.name = 'IA-STL discrete-time online Python monitor with STANDARD semantics'
     spec.declare_var('x', 'float')
     spec.declare_var('y', 'float')
@@ -27,7 +27,7 @@ def monitor():
     spec.set_var_io_type('z', 'output')
     spec.set_var_io_type('a', 'output')
     spec.set_var_io_type('b', 'output')
-    spec.spec = '(x>=0.25 and y>=0.35 and z>=0.45) or ((a > 0.55) and (b > 0.65))'
+    spec.spec = '(x>=0.25 and y>=0.35 and z>=0.45) or (eventually[0:2](a > 0.55) and (b > 0.65))'
     try:
         spec.parse()
     except rtamt.STLParseException as err:

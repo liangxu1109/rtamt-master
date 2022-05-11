@@ -279,11 +279,11 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitAlways(self, node, args):
-        in_sample = self.visit(node.children[0], args)
+    def visitAlways(self, node, args, robustness_type):
+        in_sample = self.visit(node.children[0], args, robustness_type)
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample)
+        out_sample = monitor.update(in_sample, robustness_type)
 
         return out_sample
 
@@ -339,19 +339,19 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitTimedAlways(self, node, args):
-        in_sample = self.visit(node.children[0], args)
+    def visitTimedAlways(self, node, args, robustness_type):
+        in_sample = self.visit(node.children[0], args, robustness_type)
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample)
+        out_sample = monitor.update(in_sample, robustness_type)
 
         return out_sample
 
-    def visitTimedEventually(self, node, args):
-        in_sample = self.visit(node.children[0], args)
+    def visitTimedEventually(self, node, args, robustness_type):
+        in_sample = self.visit(node.children[0], args, robustness_type)
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample)
+        out_sample = monitor.update(in_sample, robustness_type)
 
         return out_sample
 

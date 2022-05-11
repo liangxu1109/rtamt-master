@@ -220,12 +220,14 @@ class STLOfflineEvaluator(STLASTVisitor):
         return out_sample
 
     def visitAnd(self, node, args, robustness_type):
-        in_sample_1 = self.visit(node.children[0], args,robustness_type)#robustness of Conjuction left node
-        in_sample_2 = self.visit(node.children[1], args,robustness_type)#robustness of Conjuction right node
-
-        monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample_1, in_sample_2, robustness_type)#Robustness of left and right node with the operator Conjunction
-
+        out=[]
+        in_sample_2 = self.visit(node.children[1], args, robustness_type)#visit the left node and calculate the Robustness of right node
+        out.append(in_sample_2)#put the right node Robustness in the list
+        in_sample_1 = self.visit(node.children[0], args,robustness_type)#visit the left node
+        if node.children[0] != "Conjunction":
+            out.append(in_sample_1)
+            monitor = self.node_monitor_dict[node.name]
+            out_sample = monitor.update(out, robustness_type)#Robustness of left and right node with the operator Conjunction
         return out_sample
 
     def visitOr(self, node, args):

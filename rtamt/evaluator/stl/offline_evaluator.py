@@ -3,7 +3,7 @@ from rtamt.enumerations.options import *
 from rtamt.exception.stl.exception import STLNotImplementedException
 from rtamt.ast.visitor.stl.ASTVisitor import STLASTVisitor
 
-
+out = []
 class STLOfflineEvaluator(STLASTVisitor):
     def __init__(self, spec, robustness_type):
         self.spec = spec
@@ -219,8 +219,9 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
+
     def visitAnd(self, node, args, robustness_type):
-        out=[]
+        global out
         in_sample_2 = self.visit(node.children[1], args, robustness_type)#visit the left node and calculate the Robustness of right node
         out.append(in_sample_2)#put the right node Robustness in the list
         in_sample_1 = self.visit(node.children[0], args,robustness_type)#visit the left node
@@ -228,7 +229,8 @@ class STLOfflineEvaluator(STLASTVisitor):
             out.append(in_sample_1)
             monitor = self.node_monitor_dict[node.name]
             out_sample = monitor.update(out, robustness_type)#Robustness of left and right node with the operator Conjunction
-        return out_sample
+            in_sample_1 = out_sample
+        return in_sample_1
 
     def visitOr(self, node, args):
         in_sample_1 = self.visit(node.children[0], args)

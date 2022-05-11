@@ -10,11 +10,16 @@ class AndOperation(AbstractOperation):
 
         if robustness_type == "Traditional":
 
-            out = list(map(min, zip(out_sample)))
+            array = np.array(out_sample)
+            array = np.delete(array, -1, axis=0)
+            out = []
+            for i in range(0, array.shape[1]):
+                out.append(min(array[:, i]))
 
         elif robustness_type == "AGM":
             out = []
             array = np.array(out_sample)
+            array = np.delete(array, -1, axis = 0)
             for i in range(0, array.shape[1]):
                 if any(array[:, i] < 0):
                     out.append(sum(array[:, i]) / array.shape[0])

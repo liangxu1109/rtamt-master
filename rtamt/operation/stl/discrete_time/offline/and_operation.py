@@ -9,7 +9,6 @@ class AndOperation(AbstractOperation):
     def update(self, out_sample, robustness_type):
 
         if robustness_type == "Traditional":
-
             array = np.array(out_sample)
             array = np.delete(array, -1, axis=0)
             out = []
@@ -21,7 +20,7 @@ class AndOperation(AbstractOperation):
             array = np.array(out_sample)
             array = np.delete(array, -1, axis = 0)
             for i in range(0, array.shape[1]):
-                if any(array[:, i] < 0):
+                if any(array[:, i] <= 0):
                     out.append(sum(array[:, i]) / array.shape[0])
                 else:
                     result = math.pow(math.prod(1 + array[:, i]), 1 / array.shape[0]) - 1

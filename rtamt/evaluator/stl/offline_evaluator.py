@@ -222,24 +222,27 @@ class STLOfflineEvaluator(STLASTVisitor):
 
     def visitAnd(self, node, args, robustness_type):
         global out
-        in_sample_2 = self.visit(node.children[1], args, robustness_type)#visit the left node and calculate the Robustness of right node
-        out.append(in_sample_2)#put the right node Robustness in the list
-        in_sample_1 = self.visit(node.children[0], args,robustness_type)#visit the left node
+        in_sample_2 = self.visit(node.children[1], args, robustness_type)  # visit  the Robustness of right node
+        out.append(in_sample_2)  # put the right node Robustness in the list
+        in_sample_1 = self.visit(node.children[0], args,robustness_type)  # visit the left node
         if node.children[0] != "Conjunction":
             out.append(in_sample_1)
             monitor = self.node_monitor_dict[node.name]
-            out_sample = monitor.update(out, robustness_type)#Robustness of left and right node with the operator Conjunction
+            out_sample = monitor.update(out, robustness_type)  # Robustness of all node with the operator Conjunction
             in_sample_1 = out_sample
         return in_sample_1
 
-    def visitOr(self, node, args):
-        in_sample_1 = self.visit(node.children[0], args)
-        in_sample_2 = self.visit(node.children[1], args)
-
-        monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample_1, in_sample_2)
-
-        return out_sample
+    def visitOr(self, node, args, robustness_type):
+        global out
+        in_sample_2 = self.visit(node.children[1], args, robustness_type)  # visit the Robustness of right node
+        out.append(in_sample_2)  # put the right node Robustness in the list
+        in_sample_1 = self.visit(node.children[0], args, robustness_type)  # visit the left node
+        if node.children[0] != "Disjunction":
+            out.append(in_sample_1)
+            monitor = self.node_monitor_dict[node.name]
+            out_sample = monitor.update(out, robustness_type)  # Robustness of all node with the operator Conjunction
+            in_sample_1 = out_sample
+        return in_sample_1
 
     def visitImplies(self, node, args):
         in_sample_1 = self.visit(node.children[0], args)

@@ -106,19 +106,19 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
 
         self.visit(node.children[0], args)
 
-    def visitAnd(self, node, args,robustness_type):
+    def visitAnd(self, node, args, robustness_type):
         monitor = AndOperation(robustness_type)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args,robustness_type)
-        self.visit(node.children[1], args,robustness_type)
+        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[1], args, robustness_type)
 
-    def visitOr(self, node, args):
+    def visitOr(self, node, args, robustness_type):
         monitor = OrOperation()
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args)
-        self.visit(node.children[1], args)
+        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[1], args, robustness_type)
 
     def visitImplies(self, node, args):
         monitor = ImpliesOperation()

@@ -47,9 +47,9 @@ class STLASTVisitor:
         elif isinstance(element, Neg):
             ast = self.visitNot(element, args)
         elif isinstance(element, Disjunction):
-            ast = self.visitOr(element, args)
+            ast = self.visitOr(element, args, robustness_type)
         elif isinstance(element, Conjunction):
-            ast = self.visitAnd(element, args,robustness_type)
+            ast = self.visitAnd(element, args, robustness_type)
         elif isinstance(element, Implies):
             ast = self.visitImplies(element, args)
         elif isinstance(element, Iff):

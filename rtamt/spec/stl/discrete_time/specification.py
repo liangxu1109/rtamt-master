@@ -43,7 +43,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
 
     """
 
-    def __init__(self, semantics=Semantics.STANDARD, language=Language.PYTHON , robustness_type='Traditional'):
+    def __init__(self, semantics=Semantics.STANDARD, language=Language.PYTHON, robustness_type=RobustnessMetrics.Standard):
         """Constructor for STL Specification"""
         super(STLDiscreteTimeSpecification, self).__init__(semantics, language, robustness_type)
         self.name = 'STL Specification'
@@ -176,7 +176,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
 
         if self.offline_evaluator is None:
             # Initialize the offline_evaluator
-            self.offline_evaluator = STLOfflineEvaluator(self, self.robustness_type)
+            self.offline_evaluator = STLOfflineEvaluator(self)
             self.top.accept(self.offline_evaluator)
             self.reseter.node_monitor_dict = self.offline_evaluator.node_monitor_dict
 
@@ -202,7 +202,7 @@ class STLDiscreteTimeSpecification(LTLDiscreteTimeSpecification):
             self.var_object_dict[key] = out
 
         # The evaluation done wrt the discrete counter (logical time)
-        out = self.offline_evaluator.evaluate(self.top, [length], self.robustness_type)
+        out = self.offline_evaluator.evaluate(self.top, [length])
 
         out_t = [[a[0],a[1]] for a in zip(ts,out)]
         out = out_t

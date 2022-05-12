@@ -37,16 +37,16 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
     def __init__(self):
         self.node_monitor_dict = dict()
         
-    def generate(self, node,robustness_type):
-        self.visit(node, [], robustness_type)
+    def generate(self, node):
+        self.visit(node, [])
         return self.node_monitor_dict
 
-    def visitPredicate(self, node, args, robustness_type):
-        monitor = PredicateOperation(node.operator, robustness_type)
+    def visitPredicate(self, node, args):
+        monitor = PredicateOperation(node.operator)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
-        self.visit(node.children[1], args, robustness_type)
+        self.visit(node.children[0], args)
+        self.visit(node.children[1], args)
 
     def visitVariable(self, node, args):
         pass
@@ -106,19 +106,19 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
 
         self.visit(node.children[0], args)
 
-    def visitAnd(self, node, args, robustness_type):
-        monitor = AndOperation(robustness_type)
+    def visitAnd(self, node, args):
+        monitor = AndOperation()
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
-        self.visit(node.children[1], args, robustness_type)
+        self.visit(node.children[0], args)
+        self.visit(node.children[1], args)
 
-    def visitOr(self, node, args, robustness_type):
+    def visitOr(self, node, args):
         monitor = OrOperation()
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
-        self.visit(node.children[1], args, robustness_type)
+        self.visit(node.children[0], args)
+        self.visit(node.children[1], args)
 
     def visitImplies(self, node, args):
         monitor = ImpliesOperation()
@@ -147,11 +147,11 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
 
         self.visit(node.children[0], args)
 
-    def visitAlways(self, node, args, robustness_type):
+    def visitAlways(self, node, args):
         monitor = AlwaysOperation()
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[0], args)
 
     def visitUntil(self, node, args):
         monitor = UntilOperation()
@@ -229,17 +229,17 @@ class STLOfflineDiscreteTimePythonMonitor(STLASTVisitor):
         self.visit(node.children[0], args)
         self.visit(node.children[1], args)
 
-    def visitTimedAlways(self, node, args, robustness_type):
-        monitor = AlwaysBoundedOperation(node.begin, node.end, robustness_type)
+    def visitTimedAlways(self, node, args):
+        monitor = AlwaysBoundedOperation(node.begin, node.end)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[0], args)
 
-    def visitTimedEventually(self, node, args, robustness_type):
-        monitor = EventuallyBoundedOperation(node.begin, node.end, robustness_type)
+    def visitTimedEventually(self, node, args):
+        monitor = EventuallyBoundedOperation(node.begin, node.end)
         self.node_monitor_dict[node.name] = monitor
 
-        self.visit(node.children[0], args, robustness_type)
+        self.visit(node.children[0], args)
 
     def visitTimedUntil(self, node, args):
         monitor = UntilBoundedOperation(node.begin, node.end)

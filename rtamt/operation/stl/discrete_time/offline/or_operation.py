@@ -1,23 +1,25 @@
+import rtamt
 from rtamt.operation.abstract_operation import AbstractOperation
 import numpy as np
 import math
+from rtamt.enumerations import options
 class OrOperation(AbstractOperation):
     def __init__(self):
         pass
 
     def update(self, out_sample, robustness_type):
 
-        if robustness_type == "Traditional":
+        if robustness_type == rtamt.RobustnessMetrics.Standard:
             array = np.array(out_sample)
-            array = np.delete(array, -1, axis=0)
+            #array = np.delete(array, -1, axis=0)
             out = []
             for i in range(0, array.shape[1]):
                 out.append(max(array[:, i]))
 
-        elif robustness_type == "AGM":
+        elif robustness_type == rtamt.RobustnessMetrics.AGM:
             out = []
             array = np.array(out_sample)
-            array = np.delete(array, -1, axis=0)
+            #array = np.delete(array, -1, axis=0)
             for i in range(0, array.shape[1]):
                 if any(array[:, i] > 0):
                     out.append(sum(array[:, i]) / array.shape[0])

@@ -3,9 +3,8 @@ from rtamt.enumerations.comp_oper import StlComparisonOperator
 from rtamt.exception.ltl.exception import LTLException
 
 class PredicateOperation(AbstractOperation):
-    def __init__(self, op, robustness_type):
+    def __init__(self, op):
         self.op = op
-        self.robustness_type = robustness_type
 
     def update(self, left, right):
 

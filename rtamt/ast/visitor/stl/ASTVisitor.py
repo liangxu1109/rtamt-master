@@ -39,17 +39,17 @@ NOT_IMPLEMENTED = "You should implement this."
 class STLASTVisitor:
     __metaclass__ = ABCMeta
 
-    def visit(self, element, args, robustness_type):
+    def visit(self, element, args):
         if isinstance(element, Predicate):
-            ast = self.visitPredicate(element, args, robustness_type)
+            ast = self.visitPredicate(element, args)
         elif isinstance(element, Variable):
             ast = self.visitVariable(element, args)
         elif isinstance(element, Neg):
             ast = self.visitNot(element, args)
         elif isinstance(element, Disjunction):
-            ast = self.visitOr(element, args, robustness_type)
+            ast = self.visitOr(element, args)
         elif isinstance(element, Conjunction):
-            ast = self.visitAnd(element, args, robustness_type)
+            ast = self.visitAnd(element, args)
         elif isinstance(element, Implies):
             ast = self.visitImplies(element, args)
         elif isinstance(element, Iff):
@@ -59,7 +59,7 @@ class STLASTVisitor:
         elif isinstance(element, Eventually):
             ast = self.visitEventually(element, args)
         elif isinstance(element, Always):
-            ast = self.visitAlways(element, args, robustness_type)
+            ast = self.visitAlways(element, args)
         elif isinstance(element, Until):
             ast = self.visitUntil(element, args)
         elif isinstance(element, Once):
@@ -99,9 +99,9 @@ class STLASTVisitor:
         elif isinstance(element, TimedUntil):
             ast = self.visitTimedUntil(element, args)
         elif isinstance(element, TimedAlways):
-            ast = self.visitTimedAlways(element, args, robustness_type)
+            ast = self.visitTimedAlways(element, args)
         elif isinstance(element, TimedEventually):
-            ast = self.visitTimedEventually(element, args, robustness_type)
+            ast = self.visitTimedEventually(element, args)
         elif isinstance(element, TimedSince):
             ast = self.visitTimedSince(element, args)
         elif isinstance(element, TimedOnce):

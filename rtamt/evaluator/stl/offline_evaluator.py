@@ -1,14 +1,17 @@
 import operator
+
+import rtamt.enumerations.options
 from rtamt.enumerations.options import *
 from rtamt.exception.stl.exception import STLNotImplementedException
 from rtamt.ast.visitor.stl.ASTVisitor import STLASTVisitor
+from rtamt.node.ltl import *
 
-out = []
+AndOut = []
+OrOut = []
 class STLOfflineEvaluator(STLASTVisitor):
-    def __init__(self, spec, robustness_type):
+    def __init__(self, spec):
         self.spec = spec
         generator = None
-        self.robustness_type = robustness_type
 
         if self.spec.language == Language.PYTHON:
             if self.spec.time_interpretation == TimeInterpretation.DENSE:
@@ -27,10 +30,10 @@ class STLOfflineEvaluator(STLASTVisitor):
                                              'available in this version '
                                              'of the library'.format(self.spec.time_interpretation, self.spec.language))
 
-        self.node_monitor_dict = generator.generate(self.spec.top, robustness_type)
+        self.node_monitor_dict = generator.generate(self.spec.top)
 
-    def evaluate(self, node, args, robustness_type):
-        sample = self.visit(node, args, robustness_type)
+    def evaluate(self, node, args):
+        sample = self.visit(node, args)
 
         out_sample = self.spec.var_object_dict[self.spec.out_var]
         if self.spec.out_var_field:
@@ -40,9 +43,9 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitPredicate(self, node, args, robustness_type):
-        in_sample_1 = self.visit(node.children[0], args, robustness_type)
-        in_sample_2 = self.visit(node.children[1], args, robustness_type)
+    def visitPredicate(self, node, args):
+        in_sample_1 = self.visit(node.children[0], args)
+        in_sample_2 = self.visit(node.children[1], args)
 
         monitor = self.node_monitor_dict[node.name]
         out_sample = monitor.update(in_sample_1, in_sample_2)
@@ -220,27 +223,29 @@ class STLOfflineEvaluator(STLASTVisitor):
         return out_sample
 
 
-    def visitAnd(self, node, args, robustness_type):
-        global out
-        in_sample_2 = self.visit(node.children[1], args, robustness_type)  # visit  the Robustness of right node
-        out.append(in_sample_2)  # put the right node Robustness in the list
-        in_sample_1 = self.visit(node.children[0], args,robustness_type)  # visit the left node
-        if node.children[0] != "Conjunction":
-            out.append(in_sample_1)
+    def visitAnd(self, node, args):
+        global AndOut
+        in_sample_2 = self.visit(node.children[1], args)  # visit  the Robustness of right node
+        AndOut.append(in_sample_2)  # put the right node Robustness in the list
+        in_sample_1 = self.visit(node.children[0], args)  # visit the left node
+        if not isinstance(node.children[0], rtamt.enumerations.options.NodeType.And.value):
+            AndOut.append(in_sample_1)
             monitor = self.node_monitor_dict[node.name]
-            out_sample = monitor.update(out, robustness_type)  # Robustness of all node with the operator Conjunction
+            robustness_type = self.spec.robustness_type
+            out_sample = monitor.update(AndOut, robustness_type)  # Robustness of all node with the operator Conjunction
             in_sample_1 = out_sample
         return in_sample_1
 
-    def visitOr(self, node, args, robustness_type):
-        global out
-        in_sample_2 = self.visit(node.children[1], args, robustness_type)  # visit the Robustness of right node
-        out.append(in_sample_2)  # put the right node Robustness in the list
-        in_sample_1 = self.visit(node.children[0], args, robustness_type)  # visit the left node
-        if node.children[0] != "Disjunction":
-            out.append(in_sample_1)
+    def visitOr(self, node, args):
+        global OrOut
+        in_sample_2 = self.visit(node.children[1], args)  # visit the Robustness of right node
+        OrOut.append(in_sample_2)  # put the right node Robustness in the list
+        in_sample_1 = self.visit(node.children[0], args)  # visit the left node
+        if not isinstance(node.children[0], rtamt.enumerations.options.NodeType.Or.value):
+            OrOut.append(in_sample_1)
             monitor = self.node_monitor_dict[node.name]
-            out_sample = monitor.update(out, robustness_type)  # Robustness of all node with the operator Conjunction
+            robustness_type = self.spec.robustness_type
+            out_sample = monitor.update(OrOut, robustness_type)  # Robustness of all node with the operator Conjunction
             in_sample_1 = out_sample
         return in_sample_1
 
@@ -279,11 +284,11 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitAlways(self, node, args, robustness_type):
-        in_sample = self.visit(node.children[0], args, robustness_type)
+    def visitAlways(self, node, args):
+        in_sample = self.visit(node.children[0], args)
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample, robustness_type)
+        out_sample = monitor.update(in_sample)
 
         return out_sample
 
@@ -339,19 +344,20 @@ class STLOfflineEvaluator(STLASTVisitor):
 
         return out_sample
 
-    def visitTimedAlways(self, node, args, robustness_type):
-        in_sample = self.visit(node.children[0], args, robustness_type)
+    def visitTimedAlways(self, node, args):
+        in_sample = self.visit(node.children[0], args)
 
         monitor = self.node_monitor_dict[node.name]
+        robustness_type = self.spec.robustness_type
         out_sample = monitor.update(in_sample, robustness_type)
 
         return out_sample
 
-    def visitTimedEventually(self, node, args, robustness_type):
-        in_sample = self.visit(node.children[0], args, robustness_type)
+    def visitTimedEventually(self, node, args):
+        in_sample = self.visit(node.children[0], args)
 
         monitor = self.node_monitor_dict[node.name]
-        out_sample = monitor.update(in_sample, robustness_type)
+        out_sample = monitor.update(in_sample)
 
         return out_sample
 

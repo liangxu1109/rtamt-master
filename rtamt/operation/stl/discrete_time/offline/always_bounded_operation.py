@@ -8,12 +8,14 @@ class AlwaysBoundedOperation(AbstractOperation):
         self.end = end
 
     def update(self, samples, robustness_type):
+
         if robustness_type == rtamt.RobustnessMetrics.Standard:
             samples = np.array(samples)
             diff = self.end - self.begin
             out = [min(samples[j:j+diff+1]) for j in range(0, len(samples) - diff+1)]
-            tmp = [-1 for i in range(0,len(samples)-len(out))]
+            tmp = [-float("inf") for i in range(0, len(samples)-len(out))]
             out += tmp
+
         elif robustness_type == rtamt.RobustnessMetrics.AGM:
             samples = np.array(samples)
             diff = self.end - self.begin

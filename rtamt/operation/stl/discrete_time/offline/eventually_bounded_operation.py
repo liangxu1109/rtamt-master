@@ -10,7 +10,7 @@ class EventuallyBoundedOperation(AbstractOperation):
         if self.robustness_type == "Traditional":
             diff = self.end - self.begin
             out = [max(samples[j:j + diff + 1]) for j in range(0, len(samples) - diff + 1)]
-            tmp = [1 for i in range(0, len(samples) - len(out))]
+            tmp = [float("inf") for i in range(0, len(samples) - len(out))]
             out += tmp
         elif self.robustness_type == "AGM":
             diff = self.end - self.begin

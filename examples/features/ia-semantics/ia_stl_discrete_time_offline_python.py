@@ -39,7 +39,7 @@ def monitor():
 
     # # Traditional ROBUSTNESS
     spec = rtamt.STLSpecification(language=rtamt.Language.PYTHON, semantics=rtamt.Semantics.STANDARD,
-                                  robustness_type=rtamt.RobustnessMetrics.Standard)
+                                  robustness_type=rtamt.RobustnessMetrics.AGM)
     spec.name = 'IA-STL discrete-time online Python monitor with STANDARD semantics'
     spec.declare_var('x', 'float')
     spec.declare_var('y', 'float')
@@ -55,7 +55,7 @@ def monitor():
         sys.exit()
 
     rob = spec.evaluate(dataSet)
-    print(rtamt.RobustnessMetrics.Standard.__str__() + ' robustness: ' + str(rob))
+    print(rtamt.RobustnessMetrics.AGM.__str__() + ' robustness: ' + str(rob))
 
 
 

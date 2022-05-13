@@ -6,8 +6,6 @@ from rtamt.exception.stl.exception import STLNotImplementedException
 from rtamt.ast.visitor.stl.ASTVisitor import STLASTVisitor
 from rtamt.node.ltl import *
 
-AndOut = []
-OrOut = []
 class STLOfflineEvaluator(STLASTVisitor):
     def __init__(self, spec):
         self.spec = spec
@@ -224,30 +222,28 @@ class STLOfflineEvaluator(STLASTVisitor):
 
 
     def visitAnd(self, node, args):
-        global AndOut
-        in_sample_2 = self.visit(node.children[1], args)  # visit  the Robustness of right node
-        AndOut.append(in_sample_2)  # put the right node Robustness in the list
-        in_sample_1 = self.visit(node.children[0], args)  # visit the left node
-        if not isinstance(node.children[0], rtamt.enumerations.options.NodeType.And.value):
-            AndOut.append(in_sample_1)
+        out = []
+        while isinstance(node, rtamt.enumerations.options.NodeType.And.value):
+            in_sample_2 = self.visit(node.children[1], args)
+            out.append(in_sample_2)
             monitor = self.node_monitor_dict[node.name]
-            robustness_type = self.spec.robustness_type
-            out_sample = monitor.update(AndOut, robustness_type)  # Robustness of all node with the operator Conjunction
-            in_sample_1 = out_sample
-        return in_sample_1
+            node = node.children[0]
+        out.append(self.visit(node, args))
+        robustness_type = self.spec.robustness_type
+        out = monitor.update(out, robustness_type)
+        return out
 
     def visitOr(self, node, args):
-        global OrOut
-        in_sample_2 = self.visit(node.children[1], args)  # visit the Robustness of right node
-        OrOut.append(in_sample_2)  # put the right node Robustness in the list
-        in_sample_1 = self.visit(node.children[0], args)  # visit the left node
-        if not isinstance(node.children[0], rtamt.enumerations.options.NodeType.Or.value):
-            OrOut.append(in_sample_1)
+        out = []
+        while isinstance(node, rtamt.enumerations.options.NodeType.Or.value):
+            in_sample_2 = self.visit(node.children[1], args)
+            out.append(in_sample_2)
             monitor = self.node_monitor_dict[node.name]
-            robustness_type = self.spec.robustness_type
-            out_sample = monitor.update(OrOut, robustness_type)  # Robustness of all node with the operator Conjunction
-            in_sample_1 = out_sample
-        return in_sample_1
+            node = node.children[0]
+        out.append(self.visit(node, args))
+        robustness_type = self.spec.robustness_type
+        out = monitor.update(out, robustness_type)
+        return out
 
     def visitImplies(self, node, args):
         in_sample_1 = self.visit(node.children[0], args)

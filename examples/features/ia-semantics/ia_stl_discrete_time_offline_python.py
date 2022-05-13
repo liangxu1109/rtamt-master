@@ -27,7 +27,7 @@ def monitor():
     spec.set_var_io_type('z', 'output')
     spec.set_var_io_type('a', 'output')
     spec.set_var_io_type('b', 'output')
-    spec.spec = 'always [ 0,2] x>=0.25'
+    spec.spec = 'x>=0.25 and y>=0.35 and z>=0.45'
     try:
         spec.parse()
     except rtamt.STLParseException as err:
